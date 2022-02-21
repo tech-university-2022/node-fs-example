@@ -1,0 +1,23 @@
+{
+  "name": "fileoperations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aishwarya18sr/fileOperations.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aishwarya18sr/fileOperations/issues"
+  },
+  "homepage": "https://github.com/aishwarya18sr/fileOperations#readme",
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "jest": "^27.5.1"
+  }
+}
