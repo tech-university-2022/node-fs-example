@@ -1,0 +1,6 @@
+beans
+potato
+spinach
+brocolli
+beetroot
+pumpkin
