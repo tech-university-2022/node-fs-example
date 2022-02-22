@@ -18,7 +18,22 @@ const promisifyReadFile = (filePath, filterCharacter = null) => new Promise((res
     }
   });
 });
+const promisifyWriteFile = (filePath, data) => new Promise((resolve, reject) => {
+  if (typeof filePath !== 'string') throw Error('Invalid, enter a proper filepath!');
+  if (!data) throw Error('Invalid, Enter data to write!');
+  else if (typeof data !== 'string') throw Error('Invalid, enter string buffer data!');
+  fs.appendFile(filePath, data, (err) => {
+    if (err) reject(new Error(`Cannot write into file '${filePath}'!`));
+    else resolve(`${data.toString().split('\r\n')} successfully written into ${filePath}!`);
+  });
+});
+// const callingFn = async () => {
+//   const a = await promisifyWriteFile('./seed/fruits.txt', '\r\nstrawberry\r\npeach');
+//   console.log(a);
+// };
+// callingFn();
 module.exports = {
   promisifyReadDir,
   promisifyReadFile,
+  promisifyWriteFile,
 };

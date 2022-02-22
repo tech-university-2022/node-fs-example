@@ -2,3 +2,7 @@ mango
 banana
 orange
 apple
+strawberry
+peach
+strawberry
+peach

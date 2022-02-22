@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { promisifyReadDir, promisifyReadFile } = require('../src/utils/fileUtilities');
+const { promisifyReadDir, promisifyReadFile, promisifyWriteFile } = require('../src/utils/fileUtilities');
 
 describe('PromisifyReadFile function', () => {
   it('should read and display the data in a file in array format', async () => {
@@ -58,6 +58,47 @@ describe('PromisifyReadDir function', () => {
       await promisifyReadDir(5);
     } catch (err) {
       expect(err.message).toBe('Invalid, enter a proper Directory Path!');
+    }
+  });
+});
+
+describe('PromisifyWriteFile function', () => {
+  it('should write into a new line of the file', async () => {
+    jest.spyOn(fs, 'appendFile').mockImplementation((filePath, content, errorCallback) => {
+      errorCallback(null);
+    });
+    const writefilePromise = await promisifyWriteFile('./seed/beverages.txt', 'tea\r\nhot\r\nchocolate\r\ncoffee');
+    expect(writefilePromise).toBe('tea,hot,chocolate,coffee successfully written into ./seed/beverages.txt!');
+  });
+  it('should return invalid message if file is not found', async () => {
+    jest.spyOn(fs, 'appendFile').mockImplementation((filePath, content, errorCallback) => {
+      errorCallback('Cannot write into file!');
+    });
+    try {
+      await promisifyWriteFile('seed', 'exampledata');
+    } catch (err) {
+      expect(err.message).toBe('Cannot write into file \'seed\'!');
+    }
+  });
+  it('should return invalid message if file path is not string', async () => {
+    try {
+      await promisifyWriteFile(5);
+    } catch (err) {
+      expect(err.message).toBe('Invalid, enter a proper filepath!');
+    }
+  });
+  it('should return invalid message if no data is given to write', async () => {
+    try {
+      await promisifyWriteFile('./seed/fruits.txt');
+    } catch (err) {
+      expect(err.message).toBe('Invalid, Enter data to write!');
+    }
+  });
+  it('should return invalid message if data is not a string buffer', async () => {
+    try {
+      await promisifyWriteFile('./seed/fruits.txt', 5);
+    } catch (err) {
+      expect(err.message).toBe('Invalid, enter string buffer data!');
     }
   });
 });
