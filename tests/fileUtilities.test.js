@@ -63,12 +63,15 @@ describe('PromisifyReadDir function', () => {
 });
 
 describe('PromisifyWriteFile function', () => {
-  it('should write into a new line of the file', async () => {
+  it('should write into a new line of the file and return file contents in array', async () => {
     jest.spyOn(fs, 'appendFile').mockImplementation((filePath, content, errorCallback) => {
       errorCallback(null);
     });
-    const writefilePromise = await promisifyWriteFile('./seed/beverages.txt', 'tea\r\nhot\r\nchocolate\r\ncoffee');
-    expect(writefilePromise).toBe('tea,hot,chocolate,coffee successfully written into ./seed/beverages.txt!');
+    jest.spyOn(fs, 'readFile').mockImplementation((filePath, callback) => {
+      callback(null, ['mango\r\nbanana\r\norange\r\napple\r\nstrawberry\r\npeach']);
+    });
+    const writefilePromise = await promisifyWriteFile('./seed/fruits.txt', '\r\nstrawberry\r\npeach');
+    expect(writefilePromise).toStrictEqual(['mango', 'banana', 'orange', 'apple', 'strawberry', 'peach']);
   });
   it('should return invalid message if file is not found', async () => {
     jest.spyOn(fs, 'appendFile').mockImplementation((filePath, content, errorCallback) => {

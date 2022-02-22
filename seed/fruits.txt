@@ -4,5 +4,3 @@ orange
 apple
 strawberry
 peach
-strawberry
-peach

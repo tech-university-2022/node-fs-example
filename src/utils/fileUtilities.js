@@ -24,7 +24,8 @@ const promisifyWriteFile = (filePath, data) => new Promise((resolve, reject) => 
   else if (typeof data !== 'string') throw Error('Invalid, enter string buffer data!');
   fs.appendFile(filePath, data, (err) => {
     if (err) reject(new Error(`Cannot write into file '${filePath}'!`));
-    else resolve(`${data.toString().split('\r\n')} successfully written into ${filePath}!`);
+    // else resolve(`${data.toString().split('\r\n')} successfully written into ${filePath}!`);
+    return resolve(promisifyReadFile(filePath));
   });
 });
 // const callingFn = async () => {
