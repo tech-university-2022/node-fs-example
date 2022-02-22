@@ -25,3 +25,19 @@ const promisfyReadFile = (filePath , character) => {
         })
     })
 }
+
+const readAllFiles = async (directoryPath) => {
+    const rawFileNames = await promisfyReadDir(directoryPath);
+    const fileNames = rawFileNames.map((fileName) => path.parse(fileName).name);
+    const allFilePromises = rawFileNames.map((fileName) => promisfyReadFile(`${directoryPath}/${fileName}`,'c'))
+    const allFilesData = await Promise.all(allFilePromises);
+    const result = allFilesData.reduce((acc,fileContent,index) => {
+        return{
+            ...acc,
+            [fileNames[index]] : fileContent
+        }
+    }, {})
+    console.log(result);
+}
+
+readAllFiles('./seed');
