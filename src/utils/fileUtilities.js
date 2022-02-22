@@ -7,6 +7,7 @@ const promisifyReadDir = (directoryPath) => new Promise((resolve, reject) => {
     else resolve(data);
   });
 });
+
 const promisifyReadFile = (filePath, filterCharacter = null) => new Promise((resolve, reject) => {
   if (typeof filePath !== 'string') throw Error('Invalid, enter a proper filepath!');
   if (filterCharacter && typeof filterCharacter !== 'string') throw Error('Invalid, enter a proper filter Character!');
@@ -18,23 +19,42 @@ const promisifyReadFile = (filePath, filterCharacter = null) => new Promise((res
     }
   });
 });
-const promisifyWriteFile = (filePath, data) => new Promise((resolve, reject) => {
+const promisifyAppendFile = (filePath, data) => new Promise((resolve, reject) => {
   if (typeof filePath !== 'string') throw Error('Invalid, enter a proper filepath!');
   if (!data) throw Error('Invalid, Enter data to write!');
   else if (typeof data !== 'string') throw Error('Invalid, enter string buffer data!');
   fs.appendFile(filePath, data, (err) => {
     if (err) reject(new Error(`Cannot write into file '${filePath}'!`));
-    // else resolve(`${data.toString().split('\r\n')} successfully written into ${filePath}!`);
     return resolve(promisifyReadFile(filePath));
   });
 });
-// const callingFn = async () => {
-//   const a = await promisifyWriteFile('./seed/fruits.txt', '\r\nstrawberry\r\npeach');
+const promisifyWriteFile = (filePath, data) => new Promise((resolve, reject) => {
+  if (typeof filePath !== 'string') throw Error('Invalid, enter a proper filepath!');
+  if (!data) throw Error('Invalid, Enter data to write!');
+  else if (typeof data !== 'string') throw Error('Invalid, enter string buffer data!');
+  fs.writeFile(filePath, data, (err) => {
+    if (err) reject(new Error(`Cannot write into file '${filePath}'!`));
+    return resolve(promisifyReadFile(filePath));
+  });
+});
+
+const removeFromFile = async (filePath, filterCharacter = null) => {
+  if (typeof filePath !== 'string') throw Error('Invalid, enter a proper filepath!');
+  if (!filterCharacter || typeof filterCharacter !== 'string') throw Error('Invalid, enter a proper filter Character!');
+  let content = await promisifyReadFile(filePath);
+  content = content.filter((item) => !item.toLowerCase().startsWith(filterCharacter.toLowerCase())).join('\r\n');
+  const writePromise = await promisifyWriteFile(filePath, content);
+  return writePromise;
+};
+// (async () => {
+//   // const a = await promisifyWriteFile('./seed/fruits.txt', '\r\nstrawberry\r\npeach');
+//   const a = await removeFromFile('./seed/fruits.txt', 'b');
 //   console.log(a);
-// };
-// callingFn();
+// })();
+
 module.exports = {
   promisifyReadDir,
   promisifyReadFile,
-  promisifyWriteFile,
+  promisifyAppendFile,
+  removeFromFile,
 };

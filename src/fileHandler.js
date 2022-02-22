@@ -1,6 +1,5 @@
-// const fs = require('fs');
 const path = require('path');
-const { promisifyReadFile, promisifyReadDir } = require('./utils/fileUtilities');
+const { promisifyReadFile, promisifyReadDir, removeFromFile } = require('./utils/fileUtilities');
 
 const readAndFilterFiles = async (directoryPath, filterCharacter = null) => {
   if (typeof directoryPath !== 'string') throw Error('Invalid Directory Path!');
@@ -20,3 +19,6 @@ const readAndFilterFiles = async (directoryPath, filterCharacter = null) => {
 module.exports = {
   readAndFilterFiles,
 };
+// (async () => {
+//   console.log(await removeFromFile('./seed/vegetables.txt', 'C'));
+// })();
