@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { arch } = require('os');
 const promisfyReadDirectory = (directoryPath) => {
     if(typeof directoryPath !== 'string') {
         return "invalid data type";
