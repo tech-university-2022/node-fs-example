@@ -1,6 +1,6 @@
 const path = require('path');
 const { promisfyReadDir, promisfyReadFile, promisifyAppendFile,
-    promisfyWriteFile, readAndFilterFiles } = require('./fileHandlerUtilities')
+    promisfyWriteFile, readAndFilterFiles } = require('./fileHandlerUtils')
 
 const readAllFiles = async (directoryPath) => {
     const rawFileNames = await promisfyReadDir(directoryPath);
@@ -13,7 +13,7 @@ const readAllFiles = async (directoryPath) => {
             [fileNames[index]]: fileContent
         }
     }, {})
-    console.log(result);
+    //console.log(result);
 }
 
 readAllFiles('./seed');
