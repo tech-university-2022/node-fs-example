@@ -7,10 +7,12 @@ const promisefyReaddir = (directoryName) => new Promise((resolve, reject) => {
     }
   });
 });
-const promisefyFileRead = (filePath) => new Promise((resolve, reject) => {
+const promisefyFileRead = (filePath, characterForFilter) => new Promise((resolve, reject) => {
   fs.readFile(filePath, 'UTF-8', (err, data) => {
     if (err) {
       reject(err);
+    } else if (characterForFilter) {
+      resolve(data.toString().split('\r\n').filter((item) => item.toLocaleLowerCase.startsWith(characterForFilter.toLocaleLowerCase)));
     } else {
       resolve(data.toString().split('\r\n').filter((currfiledata) => currfiledata !== ''));
     }
