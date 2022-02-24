@@ -34,6 +34,12 @@ const promisifyReadFile = (filePath, firstCharacter) => new Promise((resolve, re
 });
 
 const promisifyWriteFile = (filePath, content) => new Promise((resolve, reject) => {
+  if (typeof (filePath) !== 'string') {
+    throw new Error('Invalid input for first argument');
+  }
+  if (typeof (content) !== 'string') {
+    throw new Error('Invalid input for second argument');
+  }
   fs.writeFile(filePath, content, (err) => {
     if (err) {
       reject(err);
@@ -61,5 +67,6 @@ const editFile = async (filePath, firstCharacter) => {
 module.exports = {
   promisifyReadFile,
   promisifyReadFolder,
+  promisifyWriteFile,
   editFile,
 };
