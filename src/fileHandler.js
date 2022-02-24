@@ -18,13 +18,17 @@ const readAllFiles = async (directoryPath) => {
 
 readAllFiles('./seed');
 
-(async () => {
-    console.log(await promisifyAppendFile('./seed/fruits.txt', '\r\nkiwi'));
-})();
+module.exports = {
+    readAllFiles
+}
 
-(async () => {
-    console.log(await promisfyWriteFile('./seed/beverages.txt', 'Tea\r\nCoffee'));
-})();
-(async () => {
-    console.log(await readAndFilterFiles('./seed/vegetables.txt', 'c'))
-})();
+// (async () => {
+//     console.log(await promisifyAppendFile('./seed/fruits.txt', '\r\nkiwi'));
+// })();
+
+// (async () => {
+//     console.log(await promisfyWriteFile('./seed/beverages.txt', 'Tea\r\nCoffee'));
+// })();
+// (async () => {
+//     console.log(await readAndFilterFiles('./seed/vegetables.txt', 'c'))
+// })();
