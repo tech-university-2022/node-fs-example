@@ -2,6 +2,7 @@ const fs = require('fs');
 const {
   promisifyReadFile,
   promisifyReadFolder,
+  promisifyWriteFile,
   editFile,
 } = require('../src/utils/fileUtilities');
 
@@ -70,16 +71,51 @@ describe('promisifyreadFolder', () => {
   });
 });
 
+describe('promisifyWriteFile', () => {
+  it('should return the content written into the file', async () => {
+    jest.spyOn(fs, 'writeFile').mockImplementation((filePath, content, callback) => {
+      callback(null);
+    });
+    const result = await promisifyWriteFile('./seed/beverages.txt', 'tea\nhot chocolate');
+    return expect(result).toBe('tea\nhot chocolate');
+  });
+  it('should return an error if the file does not exist', async () => {
+    jest.spyOn(fs, 'writeFile').mockImplementation((filePath, content, callback) => {
+      callback(new Error('Invalid file name'));
+    });
+    try {
+      await promisifyWriteFile('abc.txt', 'tea\r\nhot chocolate');
+    } catch (err) {
+      expect(err.message).toBe('Invalid file name');
+    }
+  });
+  it('should throw an error if the file path is not a string', async () => {
+    try {
+      await promisifyWriteFile(123, 'tea\r\nhot chocolate');
+    } catch (err) {
+      expect(err.message).toBe('Invalid input for first argument');
+    }
+  });
+  it('should throw an error if the given content is not a string', async () => {
+    try {
+      await promisifyWriteFile('./seed/beverages.txt', 12);
+    } catch (err) {
+      expect(err.message).toBe('Invalid input for second argument');
+    }
+  });
+});
+
 describe('editFile function', () => {
-  xit('should print the new file given the file name and content', async () => {
+  it('should print the new file given the file name and content', async () => {
     jest.spyOn(fs, 'readFile').mockImplementation((filepath, encoding, callback) => {
-      callback(null, 'carrot\nbeans\npotato\nspinach\nbrocolli\ncapsicum\nbeetroot');
+      callback(null, 'carrot\r\nbeans\r\npotato\r\nspinach\r\nbrocolli\r\ncapsicum\r\nbeetroot');
     });
     jest.spyOn(fs, 'writeFile').mockImplementation((filePath, content, errorCallback) => {
       errorCallback(null);
     });
     const result = await editFile('./seed/vegetables.txt', 'c');
-    expect(result).toEqual('beans\npotato\nspinach\nbrocolli\nbeetroot');
+    console.log(result);
+    expect(result).toBe('beans\npotato\nspinach\nbrocolli\nbeetroot\n');
   });
   it('should throw an error if the file is not found', async () => {
     jest.spyOn(fs, 'readFile').mockImplementation((filepath, encoding, callback) => {
