@@ -1,6 +1,6 @@
 const fs = require('fs');
 const {
-  promisifyReadDir, promisifyReadFile, promisifyAppendFile, removeFromFile,
+  promisifyReadDir, promisifyReadFile, promisifyAppendFile, removeFromFile, filterData,
 } = require('../src/utils/fileUtilities');
 
 describe('PromisifyReadFile function', () => {
@@ -26,13 +26,6 @@ describe('PromisifyReadFile function', () => {
       await promisifyReadFile(5);
     } catch (err) {
       expect(err.message).toBe('Invalid, enter a proper filepath!');
-    }
-  });
-  it('should return invalid message if filter character is not string', async () => {
-    try {
-      await promisifyReadFile('./seed', 5);
-    } catch (err) {
-      expect(err.message).toBe('Invalid, enter a proper filter Character!');
     }
   });
 });
@@ -149,5 +142,35 @@ describe('RemoveFromFile function', () => {
     } catch (err) {
       expect(err.message).toBe('Invalid, enter a proper filter Character!');
     }
+  });
+});
+describe('FilterData function', () => {
+  it('should return invalid message if filter character is not string', () => {
+    try {
+      filterData([], 5);
+    } catch (err) {
+      expect(err.message).toBe('Invalid, enter a proper filter Character!');
+    }
+  });
+  it('should return invalid message if input array is not an array', () => {
+    try {
+      filterData(2, 'c');
+    } catch (err) {
+      expect(err.message).toBe('Invalid, enter proper array!');
+    }
+  });
+  it('should return invalid message if the array does not contain only strings', () => {
+    try {
+      filterData([2, 'hi']);
+    } catch (err) {
+      expect(err.message).toBe('Invalid, enter proper array!');
+    }
+  });
+  const testArray = ['banana', 'broccoli', 'beans', 'coleslaw'];
+  it('should return only content starting with filtercharacter if include flag is true', () => {
+    expect(filterData(testArray, 'b', true)).toEqual(testArray.slice(0, 3));
+  });
+  it('should return only content not starting with filtercharacter if include flag is false', () => {
+    expect(filterData(testArray, 'b', false)).toEqual([testArray[3]]);
   });
 });

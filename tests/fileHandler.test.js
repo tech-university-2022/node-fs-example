@@ -1,29 +1,17 @@
 const { readAndFilterFiles } = require('../src/fileHandler');
 const utils = require('../src/utils/fileUtilities');
 
+const testFruits = ['mango', 'banana', 'orange', 'apple'];
+const testVegetables = ['carrot', 'beans', 'potato', 'spinach', 'brocolli', 'capsicum', 'beetroot'];
 describe('ReadAndFilterfile function', () => {
   jest.spyOn(utils, 'promisifyReadDir').mockResolvedValue(['beverages.txt', 'fruits.txt', 'vegetables.txt']);
   it('should return an object with file name as key and array of content', async () => {
-    jest.spyOn(utils, 'promisifyReadFile').mockResolvedValueOnce(['']).mockResolvedValueOnce(['mango', 'banana', 'orange', 'apple']).mockResolvedValueOnce(['carrot',
-      'beans',
-      'potato',
-      'spinach',
-      'brocolli',
-      'capsicum',
-      'beetroot']);
+    jest.spyOn(utils, 'promisifyReadFile').mockResolvedValueOnce(['']).mockResolvedValueOnce(testFruits).mockResolvedValueOnce(testVegetables);
     const readAndFilterSeed = await readAndFilterFiles('./seed');
     expect(readAndFilterSeed).toEqual({
       beverages: [''],
-      fruits: ['mango', 'banana', 'orange', 'apple'],
-      vegetables: [
-        'carrot',
-        'beans',
-        'potato',
-        'spinach',
-        'brocolli',
-        'capsicum',
-        'beetroot',
-      ],
+      fruits: testFruits,
+      vegetables: testVegetables,
     });
   });
   it('should return object with filtered content if Filter Character is given', async () => {
