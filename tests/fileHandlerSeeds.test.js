@@ -1,65 +1,107 @@
-const {readFile, getFileContent, getSeeds, } = require('../fileHandlerSeeds.js');
-const fs = require('fs');
+const { getFileContent, getSeeds, appendSeeds, removeSeeds} = require('../src/fileHandlerSeeds.js');
+const fileOperations = require('../src/fileHandler.utils');
+
+describe('getFileContent', function() {
+  test('should call promisifyReadFile once', async () => {
+    const mock = jest.spyOn(fileOperations,'promisifyReadFile');
+    await getFileContent('./resources/vegetables3.txt','C');
+    expect(mock).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe('getSeeds', function() {
   test('should return the seed object if a proper input is given', async () => {
+    const mock = jest.spyOn(fileOperations,'promisifyReadDir');
     const expectedResultSeeds = {
-      fruits1: [ 'mango', 'banana', 'orange', 'apple' ],
-      vegetables1: [
+      'beverages1':  [],
+      'beverages2':  [
+        'tea',
+        'hot chocolate',
+        'coffee',
+      ],
+      'fruits1':  [
+        'mango',
+        'banana',
+        'orange',
+        'apple',
+      ],
+      'fruits2':  [
+        'mango',
+        'banana',
+        'orange',
+        'apple',
+        'strawberry',
+        'peach',
+      ],
+      'vegetables1':  [
         'carrot',
         'beans',
         'potato',
         'spinach',
         'brocolli',
         'capsicum',
-        'beetroot'
+        'beetroot',
       ],
-      beverages1: []
+      'vegetables2':  [
+        'carrot',
+        'beans',
+        'potato',
+        'spinach',
+        'brocolli',
+        'capsicum',
+        'beetroot',
+      ],
+      'vegetables3':  [
+        'potato',
+        'spinach',
+        'pumpkin',
+      ],
     };
     await expect(getSeeds()).resolves.toStrictEqual(expectedResultSeeds);
+    expect(mock).toHaveBeenCalled();
   });
   test('should return the seed object with particular start letters if a proper input is given', async () => {
-    const expectedResultSeeds = {
-      fruits1: [],
-      vegetables1: ['carrot','capsicum'],
-      beverages1 : []
+    const mock = jest.spyOn(fileOperations,'promisifyReadDir');
+    const expectedResultSeeds =  {
+      'beverages1':  [],
+      'beverages2':  [
+        'coffee',
+      ],
+      'fruits1':  [],
+      'fruits2':  [],
+      'vegetables1':  [
+        'carrot',
+        'capsicum',
+      ],
+      'vegetables2':  [
+        'carrot',
+        'capsicum',
+      ],
+      'vegetables3':  [],
     };
     await expect(getSeeds('c')).resolves.toStrictEqual(expectedResultSeeds);
+    expect(mock).toHaveBeenCalled();
   });
 });
 
-describe('readFile', function() {
-  test('should return the fruits string if a proper input path for fruits file is given', () => {
-    jest.spyOn(fs,'readFile').mockImplementation((path,encoding,callback) => {
-      callback(null,'mango\nbanana\norange\napple');
-    });
-    return readFile('./seed/fruits1.txt').then(data => {
-      expect(data).toBe('mango\nbanana\norange\napple');
-    });
-  });
-  test('should return the vegetable string if a proper input path for vegetables file is given', () => {
-    jest.spyOn(fs,'readFile').mockImplementation((path,encoding,callback) => {
-      callback(null,'carrot\nbeans\npotato\nspinach\nbrocolli\n\ncapsicum\nbeetroot');
-    });
-    return readFile('./seed/vegetables1.txt').then(data => {
-      expect(data).toBe('carrot\nbeans\npotato\nspinach\nbrocolli\n\ncapsicum\nbeetroot');
-    });
-  });
-  test('should return the beverages string if a proper input path for beverages file is given', () => {
-    jest.spyOn(fs,'readFile').mockImplementation((path,encoding,callback) => {
-      callback(null,'');
-    });
-    return readFile('./seed/beverages1.txt').then(data => {
-      expect(data).toBe('');
-    });
-  });
-  test('should return error when file path not exists', () => {
-    jest.spyOn(fs,'readFile').mockImplementation((path,encoding,callback) => {
-      callback(new Error('ENOENT: no such file or directory, open \'C:\\Users\\Aishwarya S R\\fileOperations\\seed\\fruits.txt\''),'');
-    });
-    return readFile('./seed/fruits.txt').catch(data => {
-      expect(data).toBe('ENOENT: no such file or directory, open \'C:\\Users\\Aishwarya S R\\fileOperations\\seed\\fruits.txt\'');
-    });
+
+describe('appendSeeds', function() {
+  test('should call promisifyAppendFile ', async () => {
+    const mock = jest.spyOn(fileOperations,'promisifyAppendFile').mockResolvedValue('Successfully appended into the file');
+    const res = await appendSeeds('./resources/vegetables3.txt','C');
+    expect(mock).toHaveBeenCalled();
+    expect(res).toBe('Successfully appended');
   });
 });
 
+
+describe('removeSeeds', function() {
+  test('should call promisifyReadFile and promisifyWriteFile ', async () => {
+    const mock1 = jest.spyOn(fileOperations,'promisifyReadFile');
+    const mock2 = jest.spyOn(fileOperations,'promisifyWriteFile').mockResolvedValue('Successfully written into the file');
+    const res = await removeSeeds('./resources/vegetables3.txt','C');
+    expect(mock1).toHaveBeenCalled();
+    expect(mock2).toHaveBeenCalled();
+    expect(res).toBe('Successfully removed');
+  });
+});
